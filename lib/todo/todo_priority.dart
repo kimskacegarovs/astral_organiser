@@ -24,16 +24,14 @@ extension TodoPriorityExtension on TodoPriority {
   String get stringValue => _stringValues[this] ?? '';
 
   IconData get iconData => IconData(
-    _iconCodePoints[this] ?? Icons.error_outline.codePoint,
-    fontFamily: 'MaterialIcons',
-  );
+        _iconCodePoints[this] ?? Icons.error_outline.codePoint,
+        fontFamily: 'MaterialIcons',
+      );
 
   Color get iconColor => _iconColors[this] ?? Colors.grey;
 
   static TodoPriority fromStringValue(String? value) {
     if (value == null) return TodoPriority.low;
-    return _stringValues.entries
-        .firstWhere((element) => element.value == value)
-        .key;
+    return _stringValues.entries.firstWhere((element) => element.value == value).key;
   }
 }
