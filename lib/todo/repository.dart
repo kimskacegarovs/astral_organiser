@@ -1,34 +1,19 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
 import 'package:astral_organiser/todo/main_class.dart';
+import 'package:astral_organiser/utils.dart';
 
 class TodoRepository {
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+  final String fileName = "todos.json";
+  late final Repository<Todo> repository;
+
+  TodoRepository() {
+    repository = Repository<Todo>(fileName);
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/todos.json');
-  }
+  Future<List<Todo>> readTodos() => repository.readData(Todo.fromMap);
 
-  Future<List<Todo>> readTodos() async {
-    final file = await _localFile;
-    final contents = await file.readAsString();
-    final List<dynamic> todoList = jsonDecode(contents);
-    final List<Todo> todos = todoList.map((e) => Todo.fromMap(jsonDecode(e))).toList();
-    return todos;
-  }
+  Future<File> writeTodos(List<Todo> todos) => repository.writeData(todos);
 
-  Future<File> writeTodos(List<Todo> todos) async {
-    final file = await _localFile;
-    return file.writeAsString(jsonEncode(todos));
-  }
-
-  Future<File> deleteTodo(List<Todo> todos) async {
-    return writeTodos(todos);
-  }
+  Future<File> deleteTodo(List<Todo> todos) => repository.deleteData(todos);
 }
