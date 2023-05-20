@@ -12,7 +12,6 @@ class TodoRepository {
 
   Future<File> get _localFile async {
     final path = await _localPath;
-    print("path $path");
     return File('$path/todos.json');
   }
 
@@ -20,20 +19,16 @@ class TodoRepository {
     final file = await _localFile;
     final contents = await file.readAsString();
     final List<dynamic> todoList = jsonDecode(contents);
-    final List<Todo> todos =
-        todoList.map((e) => Todo.fromMap(jsonDecode(e))).toList();
+    final List<Todo> todos = todoList.map((e) => Todo.fromMap(jsonDecode(e))).toList();
     return todos;
   }
 
   Future<File> writeTodos(List<Todo> todos) async {
-    print("writeTodos");
-    print(jsonEncode(todos));
     final file = await _localFile;
     return file.writeAsString(jsonEncode(todos));
   }
 
   Future<File> deleteTodo(List<Todo> todos) async {
-    print("delete (replace with new)");
     return writeTodos(todos);
   }
 }

@@ -36,7 +36,7 @@ class TodoScreenState extends State<TodoScreen> {
       title: _titleController.text,
       description: _descriptionController.text,
       isCompleted: false,
-      priority: _selectedPriority,
+      priority: _selectedPriority
     );
     setState(() => _todos.add(newTodo));
     _titleController.clear();
@@ -45,19 +45,12 @@ class TodoScreenState extends State<TodoScreen> {
   }
 
   Widget _buildAddTodo() {
-    const header = ListTile(
-        title: Text('Add a new todo:',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)));
-
     DropdownButtonFormField<TodoPriority> priorityDropdown() {
       return DropdownButtonFormField<TodoPriority>(
         value: _selectedPriority,
-        onChanged: (value) {
-          setState(() => _selectedPriority = value!);
-        },
+        onChanged: (value) => setState(() => _selectedPriority = value!),
         items: TodoPriority.values.map((priority) {
-          return DropdownMenuItem<TodoPriority>(
-              value: priority, child: Text(priority.stringValue));
+          return DropdownMenuItem<TodoPriority>(value: priority, child: Text(priority.stringValue));
         }).toList(),
         decoration: const InputDecoration(hintText: 'Priority'),
       );
@@ -65,15 +58,10 @@ class TodoScreenState extends State<TodoScreen> {
 
     var panelBody = Column(
       children: [
-        TextFormField(
-            controller: _titleController,
-            decoration: const InputDecoration(hintText: 'Title')),
-        TextFormField(
-            controller: _descriptionController,
-            decoration: const InputDecoration(hintText: 'Description')),
+        TextFormField(controller: _titleController, decoration: const InputDecoration(hintText: 'Title')),
+        TextFormField(controller: _descriptionController, decoration: const InputDecoration(hintText: 'Description')),
         priorityDropdown(),
-        ElevatedButton(
-            onPressed: () => _addTodo(), child: const Text('Add Todo')),
+        ElevatedButton(onPressed: () => _addTodo(), child: const Text('Add Todo')),
       ],
     );
 
@@ -86,7 +74,8 @@ class TodoScreenState extends State<TodoScreen> {
                 dividerColor: Colors.grey,
                 children: [
                   ExpansionPanel(
-                      headerBuilder: (context, isExpanded) => header,
+                      headerBuilder: (context, isExpanded) => const ListTile(
+                          title: Text('Add a new todo:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
                       body: panelBody,
                       isExpanded: _isExpandedAddTodo,
                       canTapOnHeader: true)
@@ -102,8 +91,7 @@ class TodoScreenState extends State<TodoScreen> {
     if (todos.isEmpty) return const Center(child: Text('No todos'));
 
     void todoChangeState(Todo todo, value) {
-      setState(
-          () => {todo.isCompleted = value!, todo.modifiedAt = DateTime.now()});
+      setState(() => {todo.isCompleted = value!, todo.modifiedAt = DateTime.now()});
       TodoRepository().writeTodos(_todos);
     }
 
@@ -114,18 +102,14 @@ class TodoScreenState extends State<TodoScreen> {
 
     Widget buildTodoItem(Todo todo) {
       return ListTile(
-          leading: Checkbox(
-              value: todo.isCompleted,
-              onChanged: (value) => todoChangeState(todo, value)),
+          leading: Checkbox(value: todo.isCompleted, onChanged: (value) => todoChangeState(todo, value)),
           title: Text(todo.title),
           subtitle: Text(todo.description),
           trailing: SizedBox(
               width: 200,
               child: Row(children: [
                 Icon(todo.priority.iconData, color: todo.priority.iconColor),
-                TextButton(
-                    onPressed: () => deleteTodo(todo),
-                    child: const Icon(Icons.delete))
+                TextButton(onPressed: () => deleteTodo(todo), child: const Icon(Icons.delete))
               ])));
     }
 
@@ -140,39 +124,30 @@ class TodoScreenState extends State<TodoScreen> {
           return DateTime(dt.year, dt.month, dt.day);
         }
 
-        final isDifferentDate = index > 0 &&
-            datetimeToDate(todos[index - 1].modifiedAt) !=
-                datetimeToDate(todo.modifiedAt);
+        final isDifferentDate =
+            index > 0 && datetimeToDate(todos[index - 1].modifiedAt) != datetimeToDate(todo.modifiedAt);
 
         return isDifferentDate
-            ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                ListTile(
-                    title: Text(datetimeToDate(todo.modifiedAt).toString())),
-                buildTodoItem(todo)
-              ])
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [ListTile(title: Text(datetimeToDate(todo.modifiedAt).toString())), buildTodoItem(todo)])
             : buildTodoItem(todo);
       },
     );
 
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       return FractionallySizedBox(
           child: ConstrainedBox(
               constraints: const BoxConstraints(maxHeight: 200.0),
-              child: SizedBox(
-                height: constraints.maxHeight,
-                child: listViewBuilder,
-              )));
+              child: SizedBox(height: constraints.maxHeight, child: listViewBuilder)));
     });
   }
 
   Widget _buildTodoListPanel({bool active = true}) {
-    bool stateIsExpanded =
-        active ? _isExpandedActiveTodos : _isExpandedCompleteTodos;
+    bool stateIsExpanded = active ? _isExpandedActiveTodos : _isExpandedCompleteTodos;
 
     String headerText = active ? "Active todos" : "Completed todos";
-    Widget header =
-        Padding(padding: const EdgeInsets.all(3.0), child: Text(headerText));
+    Widget header = Padding(padding: const EdgeInsets.all(3.0), child: Text(headerText));
 
     return ExpansionPanelList(
       elevation: 4,
@@ -200,11 +175,7 @@ class TodoScreenState extends State<TodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text('Todo List')),
-        body: SingleChildScrollView(
-          child: Stack(children: [
-            buildSingleChildScrollView(),
-          ]),
-        ));
+        body: SingleChildScrollView(child: Stack(children: [buildSingleChildScrollView()])));
   }
 
   SingleChildScrollView buildSingleChildScrollView() {

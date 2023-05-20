@@ -29,18 +29,14 @@ class Todo {
     };
   }
 
-
-
   factory Todo.fromMap(Map<String, dynamic> map) {
     return Todo(
       title: map['title'],
       description: map['description'],
       isCompleted: map['isCompleted'],
       priority: TodoPriorityExtension.fromStringValue(map['priority']),
-      createdAt:
-          map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
-      modifiedAt:
-          map['modifiedAt'] != null ? DateTime.parse(map['modifiedAt']) : null,
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
+      modifiedAt: map['modifiedAt'] != null ? DateTime.parse(map['modifiedAt']) : null,
     );
   }
 
